@@ -5,7 +5,7 @@ import EditNote from './src/screens/editNote'
 
 const CurrentPageWidget = ({
   currentPage, noteList, setCurrentPage,
-  addNote, deleteNote,
+  addNote, deleteNote, editId, iD, editData
 }) => {
   switch (currentPage) {
     case 'home':
@@ -14,12 +14,18 @@ const CurrentPageWidget = ({
           noteList={noteList}
           setCurrentPage={setCurrentPage}
           deleteNote={deleteNote}
+          editId={editId}
         />
       )
     case 'add':
       return <AddNote setCurrentPage={setCurrentPage} addNote={addNote} />
     case 'edit':
-      return <EditNote />
+      return <EditNote
+        setCurrentPage={setCurrentPage}
+        iD={iD}
+        editData={editData} 
+        noteList={noteList}
+      />
     default:
       return <Home />
   }
@@ -55,6 +61,21 @@ const App = () => {
     setNoteList(newNote)
   }
 
+  const [iD, setID] = useState(null)
+
+  const editId = (id) => setID(id)
+  const editData = (id, title, desc) => {
+    const updateNotes = noteList.map((note) => {
+      if (note.id === id) {
+        return {...note, title, desc}
+      }
+      return note
+    })
+
+    setNoteList(updateNotes)
+    setCurrentPage('home')
+  }
+
   return (
     <CurrentPageWidget
       currentPage={currentPage}
@@ -62,6 +83,9 @@ const App = () => {
       noteList={noteList}
       addNote={addNote}
       deleteNote={deleteNote}
+      editId={editId}
+      iD={iD}
+      editData={editData}
     />
   )
 }
